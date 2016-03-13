@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Submit clues :)</title>
+    <script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
+  </head>
+
+  <body>
+    <form id="inputForm">
+        Person: <input type="text" name="person"></input><br>
+        Place: <input type="text" name="place"></input><br>
+        Thing: <input type="text" name="thing"></input><br>
+        <input type="submit" value="Submit"></input>
+    </form>
+
+    <br>
+    <div id="congrats"></div>
+
+    <script type="text/javascript">
+        String.prototype.isEmpty = function() {
+            return (this.length === 0 || !this.trim());
+        };
+
+        var cardsRef = new Firebase("https://coleslaw.firebaseio.com/games/demo/cards");
+
+        var writeNewData = function(values) {
+            console.log(values);
+            for (var key in values) {
+                if (!values[key].isEmpty()) {
+                    cardsRef.push({"title": values[key]});
+                    console.log(values[key]);
+                }
+            }
+        };
+
+        $("#inputForm").submit(function(event) {
+            event.preventDefault();
+            var fields = {
+                "person": $("input[name=person]").val(),
+                "place": $("input[name=place]").val(),
+                "thing": $("input[name=thing]").val(),
+            };
+            writeNewData(fields);
+            $("#congrats").text("Thanks for submitting!");
+        });
+    </script>
+  </body>
+</html>
